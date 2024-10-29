@@ -1,17 +1,16 @@
-
-from analysis import perform_eda
+from analysis import perform_analysis
 from training import train_models
 from evaluation import evaluate_models
 
 def main():
-    print("Starting EDA...")
-    perform_eda()
+    #print("Starting analysis...")
+    #perform_analysis()
     
     print("\nTraining models...")
-    train_models()
+    models, X_test, Y_test = train_models()
     
     print("\nEvaluating models...")
-    evaluate_models()
+    evaluate_models(models, X_test, Y_test)
 
 if __name__ == '__main__':
     main()

@@ -1,10 +1,9 @@
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load and inspect data
-def perform_eda(file_path='data/powerconsumption.csv'):
+def perform_analysis(file_path='data/powerconsumption.csv'):
     data = pd.read_csv(file_path)
     print(data.head())
     print(data.info())
@@ -26,4 +25,4 @@ def perform_eda(file_path='data/powerconsumption.csv'):
     plt.show()  
 
 if __name__ == '__main__':
-    perform_eda()
+    perform_analysis()

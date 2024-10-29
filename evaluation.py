@@ -1,12 +1,10 @@
-
 import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 from training import train_models
 
 # Evaluation function
-def evaluate_models():
-    models, X_test, Y_test = train_models()
+def evaluate_models(models, X_test, Y_test):
 
     # Evaluate each model
     results = {}
