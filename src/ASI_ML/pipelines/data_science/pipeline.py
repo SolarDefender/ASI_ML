@@ -1,5 +1,8 @@
 from kedro.pipeline import Pipeline, node
-from .nodes import perform_analysis, split_data, train_models, evaluate_models
+from .perform_analysis import perform_analysis
+from .split_data import split_data
+from .train_models import train_models
+from .evaluate_models import evaluate_models
 
 def create_pipeline(**kwargs):
     return Pipeline([
