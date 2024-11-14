@@ -1,3 +1,5 @@
 wandb/**
-__pycache__/**
 src/ASI_ML/__pycache__/**
+data/06_models/**
+info.log
+*.pyc
