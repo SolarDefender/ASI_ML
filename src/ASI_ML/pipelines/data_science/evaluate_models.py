@@ -2,8 +2,7 @@ import pandas as pd
 import wandb
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-def evaluate_models(models, X_test, Y_test, parameters):
-    # Initialize W&B run
+def evaluate_models(predictors, X_test, Y_test, parameters):
     wandb.init(
         project=parameters['wandb']['project'],
         entity=parameters['wandb']['entity'],
@@ -11,24 +10,40 @@ def evaluate_models(models, X_test, Y_test, parameters):
     )
 
     results = {}
-    for name, model in models.items():
-        predictions = model.predict(X_test)
-        mae = mean_absolute_error(Y_test, predictions)
-        mse = mean_squared_error(Y_test, predictions)
-        r2 = r2_score(Y_test, predictions)
-        results[name] = {'MAE': mae, 'MSE': mse, 'R2': r2}
 
-        # Log evaluation metrics to W&B
+    for target_column, predictor in predictors.items():
+        print(f"\n{'='*20} Evaluating AutoGluon model for target: {target_column} {'='*20}\n")
+
+        predictions = predictor.predict(X_test)
+
+        y_true = Y_test[target_column]
+
+        mae = mean_absolute_error(y_true, predictions)
+        mse = mean_squared_error(y_true, predictions)
+        r2 = r2_score(y_true, predictions)
+
+        results[target_column] = {
+            'MAE': mae,
+            'MSE': mse,
+            'R2': r2
+        }
+
         wandb.log({
-            f"{name}_MAE": mae,
-            f"{name}_MSE": mse,
-            f"{name}_R2": r2
+            f"{target_column}/MAE": mae,
+            f"{target_column}/MSE": mse,
+            f"{target_column}/R2": r2
         })
 
-    results_df = pd.DataFrame(results).T
+        print(f"  MAE: {mae:.2f}")
+        print(f"  MSE: {mse:.2f}")
+        print(f"  R2: {r2:.2f}")
+
+    results_df = pd.DataFrame.from_dict(results, orient='index').reset_index()
+    results_df.rename(columns={'index': 'Target'}, inplace=True)
+
+    print("\nFinal Evaluation Results:\n")
     print(results_df)
 
-    # Optionally, log the results DataFrame as a table
     wandb.log({"evaluation_results": wandb.Table(dataframe=results_df)})
 
     wandb.finish()
