@@ -30,3 +30,10 @@ autogluon:
 wandb:
   project: 'ASI_ML'
   entity: 's24645-pjatk'
+
+db:
+  host: "localhost"
+  port: 3306
+  database: "PCP"
+  user: "root"
+  password: "admin"  

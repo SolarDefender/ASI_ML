@@ -1,6 +1,7 @@
 from sklearn.model_selection import train_test_split
 
 def split_data(data, parameters):
+    data = data.drop(columns=['ID'])
     X = data[['Temperature', 'Humidity', 'WindSpeed', 'GeneralDiffuseFlows', 'DiffuseFlows']]
     Y = data[['PowerConsumption_Zone1', 'PowerConsumption_Zone2', 'PowerConsumption_Zone3']]
 

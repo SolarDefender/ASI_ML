@@ -1,6 +1,7 @@
 power_consumption_raw:
-  type: pandas.CSVDataset
-  filepath: data/01_raw/powerconsumption.csv
+  type: pandas.SQLQueryDataset
+  sql: "SELECT * FROM powerconsumption"
+  credentials: db_credentials
 
 trained_models:
   type: pickle.PickleDataset

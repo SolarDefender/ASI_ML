@@ -4,6 +4,8 @@ import seaborn as sns
 
 def perform_analysis(data):
     # Load and inspect data
+    data = data.drop(columns=['ID'])
+    print(data)
     print(data.head())
     print(data.info())
     print(data.describe())

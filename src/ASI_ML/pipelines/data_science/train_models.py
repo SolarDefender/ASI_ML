@@ -3,11 +3,12 @@ import wandb
 from autogluon.tabular import TabularPredictor
 
 def train_models(X_train, Y_train, X_dev, Y_dev, parameters):
+    wandb.login()
     wandb.init(
         project=parameters['wandb']['project'],
         entity=parameters['wandb']['entity'],
         name='train_models_autogluon',
-        config=parameters
+        config=parameters,
     )
 
     print("Parameters received:", parameters)
