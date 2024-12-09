@@ -10,9 +10,8 @@ def evaluate_models(predictors, X_test, Y_test, parameters):
     )
 
     results = {}
-    best_model = None  # Для хранения лучшей модели
-    best_r2 = -float('inf')  # Изначально установим значение r2 на очень низкое
-    best_target_column = None
+    best_models = {}  # Dictionary to store the best models for each target zone
+
     for target_column, predictor in predictors.items():
         print(f"\n{'='*20} Evaluating AutoGluon model for target: {target_column} {'='*20}\n")
 
@@ -39,11 +38,16 @@ def evaluate_models(predictors, X_test, Y_test, parameters):
         print(f"  MAE: {mae:.2f}")
         print(f"  MSE: {mse:.2f}")
         print(f"  R2: {r2:.2f}")
-        if r2 > best_r2:
-            best_r2 = r2
-            best_model = predictor
-            best_target_column = target_column
 
+        # Save the model for the current target column
+        model_path = f"data/06_models/{target_column}_model.pkl"
+        predictor.save(model_path)
+        print(f"\nModel for {target_column} saved to {model_path}")
+
+        # Store the model in the dictionary
+        best_models[target_column] = predictor
+
+    # Create a DataFrame with evaluation metrics
     results_df = pd.DataFrame.from_dict(results, orient='index').reset_index()
     results_df.rename(columns={'index': 'Target'}, inplace=True)
 
@@ -51,14 +55,7 @@ def evaluate_models(predictors, X_test, Y_test, parameters):
     print(results_df)
 
     wandb.log({"evaluation_results": wandb.Table(dataframe=results_df)})
-    if best_model:
-        best_model_path = "data/06_models/best_model.pkl"
-        
-        # Сохраняем модель
-        best_model.save(best_model_path)
-        print(f"\nBest model saved to {best_model_path}")
-
 
     wandb.finish()
 
-    return results_df,best_model
+    return results_df, best_models
