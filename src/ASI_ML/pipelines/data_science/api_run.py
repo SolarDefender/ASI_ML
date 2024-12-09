@@ -5,7 +5,6 @@ from typing import Optional
 import uvicorn
 from autogluon.tabular import TabularPredictor
 
-# Input schema for the weather parameters
 class WeatherInput(BaseModel):
     datetime: str
     temperature: float
@@ -13,7 +12,7 @@ class WeatherInput(BaseModel):
     wind_speed: float
     general_diffuse_flows: float
     diffuse_flows: float
-    target_zone: Optional[int] = None  # Zone to predict; 1, 2, or 3
+    target_zone: Optional[int] = None=
 
 
 def api_run(best_model):
