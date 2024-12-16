@@ -1,53 +1,54 @@
 import pandas as pd
-import wandb
-from autogluon.tabular import TabularPredictor
-
+from google.cloud import aiplatform
+from google.cloud import storage
+import joblib
+ 
 def train_models(X_train, Y_train, X_dev, Y_dev, parameters):
-    wandb.login()
-    wandb.init(
-        project=parameters['wandb']['project'],
-        entity=parameters['wandb']['entity'],
-        name='train_models_autogluon',
-        config=parameters,
+    # Save training data locally
+    X_train.to_csv('X_train.csv', index=False)
+    Y_train.to_csv('Y_train.csv', index=False)
+ 
+    # Upload training data to Google Cloud Storage
+    bucket_name = 'solar_defender_data'
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+ 
+    blob = bucket.blob('X_train.csv')
+    blob.upload_from_filename('X_train.csv')
+    blob = bucket.blob('Y_train.csv')
+    blob.upload_from_filename('Y_train.csv')
+    print("aaaaaaaa")
+ 
+    # Initialize AI Platform
+    project_id = 'SolarDefender'
+    region = 'us-central1'
+    aiplatform.init(project=project_id, location=region, staging_bucket=bucket_name)
+    print("bbbbbbb")
+ 
+    # Define the custom training job
+    job = aiplatform.CustomJob.from_local_script(
+        display_name='kedro-training-job',
+        script_path='src/ASI_ML/pipelines/data_science/trainer.py',
+        container_uri = 'us-docker.pkg.dev/vertex-ai/training/scikit-learn-cpu.0-23:latest',
+        args=['--bucket-name', bucket_name],
+        requirements=[
+            'pandas',
+            'joblib',
+            'scikit-learn',
+            'google-cloud-storage'
+        ],
+        replica_count=1,
+        machine_type='n1-standard-4',
     )
-
-    print("Parameters received:", parameters)
-
-    if 'autogluon' not in parameters or 'model_path' not in parameters['autogluon']:
-        raise ValueError("The 'model_path' key is missing in the 'autogluon' section of parameters.")
-
-    model_path_base = parameters['autogluon']['model_path']
-
-    predictors = {}
-
-    for target_column in Y_train.columns:
-        print(f"\nTraining AutoGluon for target: {target_column}")
-
-        train_data = pd.concat([X_train, Y_train[target_column]], axis=1)
-        dev_data = pd.concat([X_dev, Y_dev[target_column]], axis=1)
-
-        predictor = TabularPredictor(
-            label=target_column,
-            eval_metric=parameters['autogluon'].get('eval_metric', 'mean_absolute_error')
-        ).fit(
-            train_data=train_data,
-            time_limit=parameters['autogluon'].get('time_limit', 3600)
-        )
-
-        performance = predictor.evaluate(dev_data)
-        print(f"Performance for {target_column}: {performance}")
-
-        wandb.log({
-            f"{target_column}_Validation_MAE": performance.get('mean_absolute_error', None),
-            f"{target_column}_Validation_MSE": performance.get('mean_squared_error', None),
-            f"{target_column}_Validation_R2": performance.get('r2', None)
-        })
-
-        model_path = f"{model_path_base}/{target_column}"
-        predictor.save(model_path)
-        print(f"AutoGluon model for {target_column} saved at {model_path}")
-
-        predictors[target_column] = predictor
-
-    wandb.finish()
-    return predictors
+ 
+    # Run the training job
+    job.run(sync=True)
+ 
+    # Download the trained model from Cloud Storage
+    blob = bucket.blob('models/model.joblib')
+    blob.download_to_filename('model.joblib')
+ 
+    # Load the model
+    model = joblib.load('model.joblib')
+ 
+    return model

@@ -1,4 +1,5 @@
 from kedro.pipeline import Pipeline, node
+from .export_parameters import export_parameters_to_gcs
 from .perform_analysis import perform_analysis
 from .split_data import split_data
 from .train_models import train_models
@@ -7,6 +8,11 @@ from .api_run import api_run
 def create_pipeline(**kwargs):
     return Pipeline([
         node(
+            func=export_parameters_to_gcs,
+            inputs="parameters",
+            outputs=None,
+            name="export_parameters_node"
+        ),node(
             func=perform_analysis,
             inputs="power_consumption_raw",
             outputs=None,
@@ -15,7 +21,7 @@ def create_pipeline(**kwargs):
         node(
             func=split_data,
             inputs=["power_consumption_raw", "parameters"],
-            outputs=["X_train", "X_dev", "X_test", "Y_train", "Y_dev", "Y_test"],
+            outputs=None,
             name="split_data_node"
         ),
         node(
