@@ -5,12 +5,45 @@ power_consumption_raw_db:
 
 power_consumption_raw:
   type: pandas.CSVDataset
-  filepath: data/01_raw/powerconsumption.csv
+  filepath: gs://solar_defender_data/powerconsumption.csv
+  credentials: gcs_credentials
 
 trained_models:
   type: pickle.PickleDataset
-  filepath: data/06_models/trained_models.pkl
+  filepath: gs://solar_defender_models/trained_models.pkl
 
 model_metrics:
   type: pandas.CSVDataset
-  filepath: data/08_reporting/model_metrics.csv
+  filepath: gs://solar_defender_metrics/model_metrics.csv
+  credentials: gcs_credentials
+
+X_train:
+  type: pandas.CSVDataset
+  filepath: gs://solar_defender_data/X_train.csv
+  credentials: gcs_credentials
+
+Y_train:
+  type: pandas.CSVDataset
+  filepath: gs://solar_defender_data/Y_train.csv
+  credentials: gcs_credentials
+
+X_dev:
+  type: pandas.CSVDataset
+  filepath: gs://solar_defender_data/X_dev.csv
+  credentials: gcs_credentials
+
+Y_dev:
+  type: pandas.CSVDataset
+  filepath: gs://solar_defender_data/Y_dev.csv
+  credentials: gcs_credentials
+
+X_test:
+  type: pandas.CSVDataset
+  filepath: gs://solar_defender_data/X_test.csv
+  credentials: gcs_credentials
+
+Y_test:
+  type: pandas.CSVDataset
+  filepath: gs://solar_defender_data/Y_test.csv
+  credentials: gcs_credentials
+
