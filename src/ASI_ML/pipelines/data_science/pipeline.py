@@ -40,7 +40,7 @@ def create_pipeline(**kwargs):
         ),
         node(
             func=streamlit_run,
-            inputs="dummy_input",
+            inputs=["best_model"],
             outputs=None,
             name="streamlit_node"
         )

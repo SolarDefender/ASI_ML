@@ -2,8 +2,10 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional, Dict
-import uvicorn
 from autogluon.tabular import TabularPredictor
+from multiprocessing import Process
+import uvicorn
+
 
 class WeatherInput(BaseModel):
     datetime: str
@@ -15,7 +17,10 @@ class WeatherInput(BaseModel):
     target_zone: Optional[int] = None  # Zone to predict; 1, 2, or 3
 
 
-def api_run(best_models: Dict[str, TabularPredictor]):
+def start_api(best_models: Dict[str, TabularPredictor]):
+    """
+    Starts the FastAPI server. This function is meant to be run in a separate process.
+    """
     if not best_models or not all(isinstance(model, TabularPredictor) for model in best_models.values()):
         raise ValueError("Invalid or missing models for the API.")
 
@@ -37,11 +42,6 @@ def api_run(best_models: Dict[str, TabularPredictor]):
             "DiffuseFlows": input_data.diffuse_flows
         }])
 
-        # Preprocess Datetime if necessary
-        # X_new["Datetime"] = pd.to_datetime(X_new["Datetime"])
-        # X_new["Hour"] = X_new["Datetime"].dt.hour
-        # X_new["DayOfWeek"] = X_new["Datetime"].dt.dayofweek
-
         # Predict for the specified zone or all zones
         if input_data.target_zone:
             zone_key = f"PowerConsumption_Zone{input_data.target_zone}"
@@ -57,5 +57,11 @@ def api_run(best_models: Dict[str, TabularPredictor]):
             }
             return {"predictions": predictions}
 
-    # Start the FastAPI server
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+def api_run(best_models: Dict[str, TabularPredictor]):
+    process = Process(target=start_api, args=(best_models,))
+    process.start()
+    print("API is running in a separate process...")
+    return process
