@@ -14,3 +14,7 @@ trained_models:
 model_metrics:
   type: pandas.CSVDataset
   filepath: data/08_reporting/model_metrics.csv
+
+dummy_input:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/model_metrics.csv

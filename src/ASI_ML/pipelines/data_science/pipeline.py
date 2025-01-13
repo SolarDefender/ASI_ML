@@ -4,6 +4,8 @@ from .split_data import split_data
 from .train_models import train_models
 from .evaluate_models import evaluate_models
 from .api_run import api_run
+from .streamlit_run import streamlit_run
+
 def create_pipeline(**kwargs):
     return Pipeline([
         node(
@@ -35,5 +37,11 @@ def create_pipeline(**kwargs):
             inputs=["best_model"],
             outputs=None,
             name="api_node"
+        ),
+        node(
+            func=streamlit_run,
+            inputs="dummy_input",
+            outputs=None,
+            name="streamlit_node"
         )
     ])
