@@ -1,16 +1,16 @@
 # ASI_ML
-Opis problemu, założenia projektu, cele i osiągnięcia
 **Opis problemu, założenia projektu, cele i osiągnięcia**
-Projekt dotyczy analizy zużycia energii elektrycznej w czasie rzeczywistym, mającej na celu lepszą optymalizację zarządzania zasobami energetycznymi. Główne założenia obejmują:
+Projekt został stworzony w celu analizy danych pogodowych, ich przekształcania oraz opracowania modelu, który umożliwi przewidywanie zużycia energii elektrycznej na podstawie nowych danych. Program może pomóc w optymalizacji zużycia energii elektrycznej w domach i firmach, umożliwiając lepsze planowanie wykorzystania urządzeń na podstawie prognoz zużycia. Dzięki temu użytkownicy mogą obniżyć rachunki za prąd i zmniejszyć negatywny wpływ na środowisko.
 
-- Przetwarzanie danych historycznych dotyczących zużycia energii.
+Główne założenia obejmują:
+- Przetwarzanie danych pogodowych, które mogą mieć wpływ na zużycie energii elektrycznej.
 - Tworzenie modeli predykcyjnych prognozujących zużycie w przyszłości.
 - Implementację aplikacji Streamlit, która umożliwia interakcję użytkownika z modelami.
 - Monitorowanie procesu modelowania i wyników za pomocą platformy wandb.
 
 W ramach projektu udało się:
 - Opracować spójny potok przetwarzania danych i trenowania modeli w oparciu o framework Kedro.
-- Zaimplementować skuteczne modele predykcyjne.
+- Zaimplementować skuteczne modele predykcyjne przy użyciu AutoGluon.
 - Zintegrować aplikację Streamlit z potokiem danych.
 - Skonfigurować monitoring postępów uczenia modeli w wandb.
 
@@ -27,19 +27,14 @@ W ramach projektu udało się:
    pip install -r requirements.txt
    ```
 
-3. **Uruchomienie aplikacji Streamlit:**
-   ```bash
-   streamlit run src/ASI_ML/pipelines/data_science/streamlit_run.py
-   ```
-
-4. **Uruchamianie potoku Kedro:**
+3. **Uruchamianie potoku Kedro:**
    ```bash
    kedro run
    ```
 
 **Struktura potoku**
 
-Potok oparty na Kedro składa się z dwóch głównych komponentów:
+Potok oparty na Kedro składa się z trzech głównych komponentów:
 
 1. **Data Processing:**
    - Wczytywanie i wstępne przetwarzanie danych surowych.
@@ -49,6 +44,10 @@ Potok oparty na Kedro składa się z dwóch głównych komponentów:
    - Podział danych na zbiory treningowy i testowy.
    - Trenowanie modeli (m.in. regresja, drzewa decyzyjne).
    - Ewaluacja wyników modeli.
+
+3. **Application Deployment:**
+   - Uruchamianie API umożliwiającego wykonywanie predykcji na podstawie natrenowanego modelu.
+   - Integracja aplikacji Streamlit z API, umożliwiająca interaktywne wizualizacje i użytkowanie przez końcowych użytkowników.
 
 
 **Opis aplikacji Streamlit i potoku Kedro**
