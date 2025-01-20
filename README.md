@@ -37,7 +37,7 @@ W ramach projektu udało się:
 Potok oparty na Kedro składa się z trzech głównych komponentów:
 
 1. **Data Processing:**
-   - Wczytywanie i wstępne przetwarzanie danych surowych.
+   - Wczytywanie i wstępne przetwarzanie danych surowych przy użyciu baz danych MySQL.
    - Normalizacja i transformacja danych wejściowych zgodnie z ustalonymi parametrami.
 
 2. **Data Science:**
@@ -46,7 +46,7 @@ Potok oparty na Kedro składa się z trzech głównych komponentów:
    - Ewaluacja wyników modeli.
 
 3. **Application Deployment:**
-   - Uruchamianie API umożliwiającego wykonywanie predykcji na podstawie natrenowanego modelu.
+   - Uruchamianie API umożliwiającego wykonywanie predykcji na podstawie natrenowanego modelu i aktualizowanie zbioru danych na podstawie wyników.
    - Integracja aplikacji Streamlit z API, umożliwiająca interaktywne wizualizacje i użytkowanie przez końcowych użytkowników.
 
 
@@ -56,7 +56,7 @@ Aplikacja Streamlit umożliwia:
 - Interaktywne wybieranie parametrów modeli i ich ewaluację.
 - Intuicyjne środowisko dla użytkownika, który nie musi znać szczegółów technicznych potoku.
 
-Potok Kedro zapewnia modularność procesu przetwarzania danych oraz trenowania modeli, umożliwia to łatwą rozbudowę projektu o kolejne funkcjonalności.
+Potok Kedro zapewnia modularność procesu przetwarzania danych oraz trenowania modeli, umożliwiając łatwą rozbudowę projektu o kolejne funkcjonalności. Struktura projektu Kedro opiera się na koncepcji katalogów, które definiują źródła i przechowywanie danych, takich jak pliki CSV, bazy danych, czy inne formaty danych. Dzięki temu dane mogą być zarządzane w spójny i powtarzalny sposób w całym procesie.
 
 **Opis monitorowania z wandb**
 Platforma wandb umożliwia:
